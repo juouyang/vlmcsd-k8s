@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vlmcsd
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: vlmcsd
+  namespace: vlmcsd
+  labels:
+    app: vlmcsd
+spec:
+  selector:
+    matchLabels:
+      app: vlmcsd
+  template:
+    metadata:
+      labels:
+        app: vlmcsd
+    spec:
+      containers:
+      - name: vlmcsd
+        image: mikolatero/vlmcsd:latest
+        imagePullPolicy: IfNotPresent
+        # command: ["/vlmcsd"]
+        # args: ["-D", "-t", "3", "-q"]  # 修改啟動參數停用日誌
+        ports:
+        - containerPort: 1688
+          hostPort: 1688
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        # readinessProbe:
+        #   tcpSocket:
+        #     port: 1688
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
+        # livenessProbe:
+        #   tcpSocket:
+        #     port: 1688
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 20
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
