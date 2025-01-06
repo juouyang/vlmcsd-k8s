@@ -43,6 +43,13 @@ spec:
         #     port: 1688
         #   initialDelaySeconds: 10
         #   periodSeconds: 20
+      - name: udp-ping-pong
+        image: juouyang/udp-ping-pong:latest
+        args: ["0.0.0.0", "1689", "--silent"]
+        ports:
+          - containerPort: 1689
+            hostPort: 1689
+            protocol: UDP
       dnsPolicy: ClusterFirst
       restartPolicy: Always
   updateStrategy:
